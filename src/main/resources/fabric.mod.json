@@ -17,9 +17,7 @@
     "minecraft": "1.19.x",
     "fabric-language-kotlin": "*",
     "fabricloader": ">=0.8.7",
-    "fabric": "*"
-  },
-  "suggests": {
+    "fabric": "*",
     "modmenu": "*"
   },
   "license": ["LGPL-3"],

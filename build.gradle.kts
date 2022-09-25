@@ -68,7 +68,7 @@ modrinth {
         listOf(
             com.modrinth.minotaur.dependencies.ModDependency("P7dR8mSH", "required"),
             com.modrinth.minotaur.dependencies.ModDependency("Ha28R6CL", "required"),
-            com.modrinth.minotaur.dependencies.ModDependency("mOgUt4GM", "optional")
+            com.modrinth.minotaur.dependencies.ModDependency("mOgUt4GM", "required")
         )
     )
 }
