@@ -18,6 +18,7 @@ object ScoreboardSettings {
     var hideNumbers = false
     var backgroundOpacity = 0.3F
     var titleBackgroundOpacity = 0.4F
+    var hideTitle = false
     var hiddenLines = mutableListOf<Int>()
 
 
@@ -108,16 +109,30 @@ object ScoreboardSettings {
 
     private fun lineOptions(): List<Option<Boolean>> {
         val l = mutableListOf<Option<Boolean>>()
+        l.add(
+            Option.createBuilder(Boolean::class.java)
+                .tooltip(Component.literal("Select if the scoreboard title should be hidden"))
+                .name(Component.literal("Hide scoreboard title"))
+                .binding(
+                    false,
+                    { hideTitle },
+                    { newValue: Boolean ->
+                        hideTitle = newValue
+                    }
+                )
+                .controller(::TickBoxController)
+                .build()
+        )
         repeat(15) {
             val i = it + 1
             l.add(Option.createBuilder(Boolean::class.java)
-                .name(Component.literal("Show Line $i"))
-                .tooltip(Component.literal("Select if you want to show line $i"))
+                .name(Component.literal("Hide line $i"))
+                .tooltip(Component.literal("Select if line $i should be hidden"))
                 .binding(
-                    true,
-                    { !hiddenLines.contains(i) },
+                    false,
+                    { hiddenLines.contains(i) },
                     { newValue: Boolean ->
-                        if (!newValue)
+                        if (newValue)
                             hiddenLines.add(i)
                         else
                             hiddenLines.remove(i)
@@ -141,6 +156,7 @@ object ScoreboardSettings {
         hideNumbers = c.hideNumbers
         backgroundOpacity = c.backgroundOpacity
         titleBackgroundOpacity = c.titleBackgroundOpacity
+        hideTitle = c.hideTitle
         hiddenLines = c.hiddenLines
     }
 
@@ -148,7 +164,7 @@ object ScoreboardSettings {
         configFile.writeText(
             Json.encodeToString(
                 ScoreboardSettingsFile(
-                    showScoreboard, hideNumbers, backgroundOpacity, titleBackgroundOpacity, hiddenLines
+                    showScoreboard, hideNumbers, backgroundOpacity, titleBackgroundOpacity, hideTitle, hiddenLines
                 )
             )
         )

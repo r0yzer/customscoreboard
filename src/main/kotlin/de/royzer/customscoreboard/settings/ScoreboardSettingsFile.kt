@@ -6,5 +6,6 @@ data class ScoreboardSettingsFile(
     var hideNumbers: Boolean,
     var backgroundOpacity: Float,
     var titleBackgroundOpacity: Float,
+    var hideTitle: Boolean,
     var hiddenLines: MutableList<Int>,
 )
