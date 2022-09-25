@@ -31,5 +31,6 @@
   },
   "mixins": [
     "customscoreboard.mixins.json"
-  ]
+  ],
+  "icon": "assets/icon.png"
 }
