@@ -7,6 +7,7 @@ plugins {
     //id("org.quiltmc.quilt-mappings-on-loom") version "4.2.1"
     id("io.github.juuxel.loom-quiltflower") version "1.7.3"
     id("com.modrinth.minotaur") version "2.4.3"
+    id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
 val minecraftVersion = "1.19.2"
@@ -71,4 +72,23 @@ modrinth {
             com.modrinth.minotaur.dependencies.ModDependency("mOgUt4GM", "required")
         )
     )
+}
+
+curseforge {
+    apiKey = findProperty("curseforge.token") ?: ""
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
+        mainArtifact(tasks.getByName("remapJar").outputs.files.first())
+
+        id = "681641"
+        releaseType = "release"
+        addGameVersion(minecraftVersion)
+
+        relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
+            requiredDependency("fabric-api")
+            requiredDependency("fabric-language-kotlin")
+        })
+    })
+    options(closureOf<com.matthewprenger.cursegradle.Options> {
+        forgeGradleIntegration = false
+    })
 }
