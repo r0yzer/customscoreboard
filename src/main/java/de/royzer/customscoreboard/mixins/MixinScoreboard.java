@@ -32,18 +32,24 @@ public class MixinScoreboard {
         if (!ScoreboardSettings.INSTANCE.getHiddenLines().isEmpty()) {
             // copied from the real function
             List<Score> list = Lists.newArrayList();
-            int i = 0;
-            for(Map<Objective, Score> map : this.playerScores.values()) {
+            for (Map<Objective, Score> map : this.playerScores.values()) {
                 Score score = map.get(objective);
                 if (score != null) {
-                    if (!ScoreboardSettings.INSTANCE.getHiddenLines().contains(i+1)) {
-                        list.add(score);
-                    }
+                    list.add(score);
                 }
-                i++;
             }
             list.sort(Score.SCORE_COMPARATOR);
-            cir.setReturnValue(list);
+            // filter lines to be hidden
+            List<Score> list2 = Lists.newArrayList();
+            var i = 0;
+            for (Score score : list) {
+                i++;
+                if (!ScoreboardSettings.INSTANCE.getHiddenLines().contains(i)) {
+                    list2.add(score);
+                }
+            }
+
+            cir.setReturnValue(list2);
         }
     }
 

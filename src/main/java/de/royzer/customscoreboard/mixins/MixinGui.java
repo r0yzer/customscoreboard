@@ -2,16 +2,13 @@ package de.royzer.customscoreboard.mixins;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.royzer.customscoreboard.settings.ScoreboardSettings;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.scores.Objective;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Gui.class)
@@ -56,5 +53,31 @@ public abstract class MixinGui {
         if (ScoreboardSettings.INSTANCE.getHideNumbers()) return this.screenWidth - 3 + 2;
         else return x;
     }
+
+    @Redirect(
+        method = "displayScoreboardSidebar",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
+            ordinal = 0
+        )
+    )
+    public int setBackgroundOpacity(Options instance, float opacity) {
+        return Minecraft.getInstance().options.getBackgroundColor(ScoreboardSettings.INSTANCE.getBackgroundOpacity());
+    }
+
+    @Redirect(
+        method = "displayScoreboardSidebar",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
+            ordinal = 1
+        )
+    )
+    public int setTitleBackgroundOpacity(Options instance, float opacity) {
+        return Minecraft.getInstance().options.getBackgroundColor(ScoreboardSettings.INSTANCE.getTitleBackgroundOpacity());
+    }
+
+
 
 }

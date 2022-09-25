@@ -1,30 +1,36 @@
 package de.royzer.customscoreboard.settings
 
+import de.royzer.customscoreboard.configFile
 import dev.isxander.yacl.api.ConfigCategory
 import dev.isxander.yacl.api.Option
 import dev.isxander.yacl.api.YetAnotherConfigLib
 import dev.isxander.yacl.gui.controllers.BooleanController
-import dev.isxander.yacl.gui.controllers.string.StringController
+import dev.isxander.yacl.gui.controllers.TickBoxController
+import dev.isxander.yacl.gui.controllers.slider.FloatSliderController
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
 object ScoreboardSettings {
     var showScoreboard = true
     var hideNumbers = false
-
+    var backgroundOpacity = 0.3F
+    var titleBackgroundOpacity = 0.4F
     var hiddenLines = mutableListOf<Int>()
 
-    fun save() {}
 
     fun createGui(parent: Screen): Screen {
         return YetAnotherConfigLib.createBuilder()
-            .title(Component.literal("Fler"))
+            .title(Component.literal("Scoreboard settings"))
             .category(ConfigCategory.createBuilder()
                 .name(Component.literal("General settings"))
                 .tooltip(Component.literal("General Scoreboard settings"))
                 .option(
                     Option.createBuilder(Boolean::class.java)
                         .name(Component.literal("Show scoreboard"))
+                        .tooltip(Component.literal("Select if the scoreboard should be displayed"))
                         .binding(
                             true,
                             { this.showScoreboard }
@@ -37,6 +43,7 @@ object ScoreboardSettings {
                 .option(
                     Option.createBuilder(Boolean::class.java)
                         .name(Component.literal("Hide numbers"))
+                        .tooltip(Component.literal("Select if you want to hide the scores (numbers at the right)"))
                         .binding(
                             false,
                             { this.hideNumbers }
@@ -46,33 +53,104 @@ object ScoreboardSettings {
                         .controller(::BooleanController)
                         .build()
                 )
+                .build()
+            )
+            .category(ConfigCategory.createBuilder()
+                .name(Component.literal("Color settings"))
+                .tooltip(Component.literal("Settings for the scoreboard colors/opacities"))
                 .option(
-                    Option.createBuilder(String::class.java)
-                        .name(Component.literal("Hidden lines"))
-                        .tooltip(Component.literal("Enter the lines you want to hide, seperated by a comma"))
+                    Option.createBuilder(Float::class.java)
+                        .name(Component.literal("Title Background Opacity"))
+                        .tooltip(Component.literal("The opacity of the scoreboard title background"))
                         .binding(
-                            "",
-                            { this.hiddenLines.joinToString() }
-                        ) { newValue: String ->
-                            try {
-                                val splitStrings = newValue.removeSuffix(",").split(",")
-                                val lines = splitStrings.map { it.trim() }.map { it.toInt() }.toMutableList()
-                                this.hiddenLines = lines
-                            } catch (e: Exception) {
-                                this.hiddenLines = mutableListOf()
+                            0.4F,
+                            { titleBackgroundOpacity },
+                            { newValue: Float ->
+                                titleBackgroundOpacity = newValue
                             }
+                        )
+                        .controller {
+                            FloatSliderController(it, 0F, 1F, 0.1F)
                         }
-                        .controller(::StringController)
+                        .build()
+                )
+                .option(
+                    Option.createBuilder(Float::class.java)
+                        .name(Component.literal("Background Opacity"))
+                        .tooltip(Component.literal("The opacity of the scoreboard background"))
+                        .binding(
+                            0.3F,
+                            { backgroundOpacity },
+                            { newValue: Float ->
+                                backgroundOpacity = newValue
+                            }
+                        )
+                        .controller {
+                            FloatSliderController(it, 0F, 1F, 0.1F)
+                        }
                         .build()
                 )
                 .build()
             )
-            .category(ConfigCategory.createBuilder()
-                .name(Component.literal("andere settings"))
-                .build()
+            .category(
+                ConfigCategory.createBuilder()
+                    .name(Component.literal("Line settings"))
+                    .tooltip(Component.literal("Select the lines you want to hide (lowest line = line 1)"))
+                    .options(
+                        lineOptions()
+                    )
+                    .build()
             )
             .save(ScoreboardSettings::save)
             .build()
             .generateScreen(parent)
+    }
+
+    private fun lineOptions(): List<Option<Boolean>> {
+        val l = mutableListOf<Option<Boolean>>()
+        repeat(15) {
+            val i = it + 1
+            l.add(Option.createBuilder(Boolean::class.java)
+                .name(Component.literal("Show Line $i"))
+                .tooltip(Component.literal("Select if you want to show line $i"))
+                .binding(
+                    true,
+                    { !hiddenLines.contains(i) },
+                    { newValue: Boolean ->
+                        if (!newValue)
+                            hiddenLines.add(i)
+                        else
+                            hiddenLines.remove(i)
+                    }
+                )
+                .controller(::TickBoxController)
+                .build()
+            )
+        }
+        return l
+    }
+
+    fun load() {
+        val c = try {
+            Json.decodeFromString<ScoreboardSettingsFile>(configFile.readText())
+        } catch (e: Exception) {
+            save()
+            return
+        }
+        showScoreboard = c.showScoreboard
+        hideNumbers = c.hideNumbers
+        backgroundOpacity = c.backgroundOpacity
+        titleBackgroundOpacity = c.titleBackgroundOpacity
+        hiddenLines = c.hiddenLines
+    }
+
+    private fun save() {
+        configFile.writeText(
+            Json.encodeToString(
+                ScoreboardSettingsFile(
+                    showScoreboard, hideNumbers, backgroundOpacity, titleBackgroundOpacity, hiddenLines
+                )
+            )
+        )
     }
 }

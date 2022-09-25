@@ -22,7 +22,8 @@
   "suggests": {
     "modmenu": "*"
   },
-  "description": "Scoreboard mod",
+  "license": ["LGPL-3"],
+  "description": "A scoreboard customization mod",
   "contact": {
     "sources": "https://github.com/r0yzer/customscoreboard",
     "issues": "https://github.com/r0yzer/customscoreboard/issues",
