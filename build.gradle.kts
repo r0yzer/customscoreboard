@@ -2,10 +2,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
     id("fabric-loom") version "1.0-SNAPSHOT"
     //id("org.quiltmc.quilt-mappings-on-loom") version "4.2.1"
     id("io.github.juuxel.loom-quiltflower") version "1.7.3"
+    id("com.modrinth.minotaur") version "2.4.3"
 }
+
+val minecraftVersion = "1.19.2"
 
 group = "de.royzer"
 version = "1.0"
@@ -17,7 +21,7 @@ repositories {
     maven("https://maven.terraformersmc.com/releases")
 }
 dependencies {
-    minecraft("com.mojang:minecraft:1.19.2")
+    minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
         parchment("org.parchmentmc.data:parchment-1.19.2:2022.09.18@zip")
         officialMojangMappings()
@@ -49,4 +53,22 @@ tasks {
             expand("version" to project.version)
         }
     }
+}
+
+modrinth {
+    token.set(findProperty("modrinth.token").toString())
+    projectId.set("HLW5dnBW")
+    versionNumber.set(rootProject.version.toString())
+    versionType.set("release")
+    uploadFile.set(tasks.remapJar.get())
+    gameVersions.set(listOf(minecraftVersion))
+    loaders.add("fabric")
+
+    dependencies.set(
+        listOf(
+            com.modrinth.minotaur.dependencies.ModDependency("P7dR8mSH", "required"),
+            com.modrinth.minotaur.dependencies.ModDependency("Ha28R6CL", "required"),
+            com.modrinth.minotaur.dependencies.ModDependency("mOgUt4GM", "optional")
+        )
+    )
 }
