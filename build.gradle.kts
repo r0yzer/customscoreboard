@@ -1,19 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
-    id("fabric-loom") version "1.0-SNAPSHOT"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.serialization") version "1.8.22"
+    id("fabric-loom") version "1.2-SNAPSHOT"
     //id("org.quiltmc.quilt-mappings-on-loom") version "4.2.1"
-    id("io.github.juuxel.loom-quiltflower") version "1.7.3"
-    id("com.modrinth.minotaur") version "2.4.3"
+    id("io.github.juuxel.loom-quiltflower") version "1.9.0"
+    id("com.modrinth.minotaur") version "2.8.1"
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
-val minecraftVersion = "1.19.2"
+val minecraftVersion = "1.20.1"
 
 group = "de.royzer"
-version = "1.0"
+version = "1.0.1"
 
 repositories {
     maven("https://maven.fabricmc.net/")
@@ -23,16 +23,15 @@ repositories {
 }
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.layered {
-        parchment("org.parchmentmc.data:parchment-1.19.2:2022.09.18@zip")
-        officialMojangMappings()
-    })
-    modImplementation("net.fabricmc:fabric-loader:0.14.9")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.61.0+1.19.2")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.3+kotlin.1.7.10")
+    mappings(loom.officialMojangMappings())
 
-    include(modImplementation("dev.isxander:yet-another-config-lib:1.4.2")!!)
-    modApi("com.terraformersmc:modmenu:4.0.5")
+
+    modImplementation("net.fabricmc:fabric-loader:0.14.21")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.83.1+1.20.1")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.9.5+kotlin.1.8.22")
+
+    include(modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.0.2+1.20")!!)
+    modApi("com.terraformersmc:modmenu:7.0.1")
 }
 
 
@@ -63,7 +62,7 @@ modrinth {
     versionType.set("release")
     uploadFile.set(tasks.remapJar.get())
     gameVersions.set(listOf(minecraftVersion))
-    loaders.add("fabric")
+    loaders.addAll(listOf("fabric", "quilt"))
 
     dependencies.set(
         listOf(
