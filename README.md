@@ -14,4 +14,4 @@ pacmc install "Custom Scoreboard"
 
 Download the mod from [modrinth](https://modrinth.com/mod/customscoreboard/) or [curseforge](https://www.curseforge.com/minecraft/mc-mods/custom-scoreboard) and put it into your mods folder in the .minecraft directory
 
-To access the settings GUI install [ModMenu]("https://modrinth.com/mod/modmenu") and click on the "configure" button
+To access the settings GUI install [ModMenu](https://modrinth.com/mod/modmenu) and click on the "configure" button
