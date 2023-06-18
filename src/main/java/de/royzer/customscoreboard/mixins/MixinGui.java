@@ -1,12 +1,11 @@
 package de.royzer.customscoreboard.mixins;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import de.royzer.customscoreboard.settings.ScoreboardSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.scores.Objective;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Gui.class)
-public abstract class MixinGui extends GuiComponent {
+public abstract class MixinGui  {
 
     @Shadow
     private int screenWidth;
@@ -25,7 +24,7 @@ public abstract class MixinGui extends GuiComponent {
         at = @At("HEAD"),
         cancellable = true
     )
-    public void disableScoreboard(PoseStack poseStack, Objective objective, CallbackInfo ci) {
+    public void disableScoreboard(GuiGraphics guiGraphics, Objective objective, CallbackInfo ci) {
         if (!ScoreboardSettings.INSTANCE.getShowScoreboard()) {
             ci.cancel();
         }
@@ -35,7 +34,7 @@ public abstract class MixinGui extends GuiComponent {
         method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/lang/String;FFI)I"
+            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I"
         ),
         index = 1
     )
@@ -48,13 +47,13 @@ public abstract class MixinGui extends GuiComponent {
         method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/lang/String;FFI)I"
+            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I"
         ),
         index = 2
     )
-    public float correctScoreboardPosition(float x) {
+    public int correctScoreboardPosition(int i) {
         if (ScoreboardSettings.INSTANCE.getHideNumbers()) return this.screenWidth - 3 + 2;
-        else return x;
+        else return i;
     }
 
     @Redirect(
@@ -86,13 +85,13 @@ public abstract class MixinGui extends GuiComponent {
         method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Font;draw(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/network/chat/Component;FFI)I",
+            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
             ordinal = 1
         )
     )
-    public int hideTitle(Font instance, PoseStack poseStack, Component text, float x, float y, int color) {
+    public int hideTitle(GuiGraphics instance, Font font, Component component, int i, int j, int k, boolean bl) {
         if (!ScoreboardSettings.INSTANCE.getHideTitle()) {
-            instance.draw(poseStack, text, x, y, color);
+            instance.drawString(font, component, i, j, k);
         }
         return 0;
     }
@@ -101,26 +100,26 @@ public abstract class MixinGui extends GuiComponent {
         method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Gui;fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V",
+            target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",
             ordinal = 1
         )
     )
-    public void hideTitleBackground(PoseStack poseStack, int i, int i2, int i3, int i4, int i5) {
+    public void hideTitleBackground(GuiGraphics instance, int i, int j, int k, int l, int m) {
         if (!ScoreboardSettings.INSTANCE.getHideTitle()) {
-            fill(poseStack, i, i2, i3, i4, i5);
+            instance.fill(i, j, k, l, m);
         }
     }
     @Redirect(
         method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/Gui;fill(Lcom/mojang/blaze3d/vertex/PoseStack;IIIII)V",
+            target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",
             ordinal = 2
         )
     )
-    public void hideTitleBackground2(PoseStack poseStack, int i, int i2, int i3, int i4, int i5) {
+    public void hideTitleBackground2(GuiGraphics instance, int i, int j, int k, int l, int m) {
         if (!ScoreboardSettings.INSTANCE.getHideTitle()) {
-            fill(poseStack, i, i2, i3, i4, i5);
+            instance.fill(i, j, k, l, m);
         }
     }
 

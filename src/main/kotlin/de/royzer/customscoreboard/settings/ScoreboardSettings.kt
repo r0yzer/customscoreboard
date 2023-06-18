@@ -1,13 +1,12 @@
 package de.royzer.customscoreboard.settings
 
 import de.royzer.customscoreboard.configFile
-import dev.isxander.yacl.api.ConfigCategory
-import dev.isxander.yacl.api.Option
-import dev.isxander.yacl.api.YetAnotherConfigLib
-import dev.isxander.yacl.gui.controllers.BooleanController
-import dev.isxander.yacl.gui.controllers.TickBoxController
-import dev.isxander.yacl.gui.controllers.slider.FloatSliderController
-import kotlinx.serialization.decodeFromString
+import dev.isxander.yacl3.api.ConfigCategory
+import dev.isxander.yacl3.api.Option
+import dev.isxander.yacl3.gui.controllers.slider.FloatSliderController
+import dev.isxander.yacl3.api.YetAnotherConfigLib
+import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.minecraft.client.gui.screens.Screen
@@ -29,29 +28,29 @@ object ScoreboardSettings {
                 .name(Component.literal("General settings"))
                 .tooltip(Component.literal("General Scoreboard settings"))
                 .option(
-                    Option.createBuilder(Boolean::class.java)
+                    Option.createBuilder<Boolean>()
                         .name(Component.literal("Show scoreboard"))
-                        .tooltip(Component.literal("Select if the scoreboard should be displayed"))
+//                        .tooltip(Component.literal("Select if the scoreboard should be displayed"))
                         .binding(
                             true,
                             { this.showScoreboard }
                         ) { newValue: Boolean ->
                             this.showScoreboard = newValue
                         }
-                        .controller(::BooleanController)
+                        .controller(BooleanControllerBuilder::create)
                         .build()
                 )
                 .option(
-                    Option.createBuilder(Boolean::class.java)
+                    Option.createBuilder<Boolean>()
                         .name(Component.literal("Hide numbers"))
-                        .tooltip(Component.literal("Select if you want to hide the scores (numbers at the right)"))
+//                        .tooltip(Component.literal("Select if you want to hide the scores (numbers at the right)"))
                         .binding(
                             false,
                             { this.hideNumbers }
                         ) { newValue: Boolean ->
                             this.hideNumbers = newValue
                         }
-                        .controller(::BooleanController)
+                        .controller(BooleanControllerBuilder::create)
                         .build()
                 )
                 .build()
@@ -60,9 +59,9 @@ object ScoreboardSettings {
                 .name(Component.literal("Color settings"))
                 .tooltip(Component.literal("Settings for the scoreboard colors/opacities"))
                 .option(
-                    Option.createBuilder(Float::class.java)
+                    Option.createBuilder<Float>()
                         .name(Component.literal("Title Background Opacity"))
-                        .tooltip(Component.literal("The opacity of the scoreboard title background"))
+//                        .tooltip(Component.literal("The opacity of the scoreboard title background"))
                         .binding(
                             0.4F,
                             { titleBackgroundOpacity },
@@ -70,15 +69,15 @@ object ScoreboardSettings {
                                 titleBackgroundOpacity = newValue
                             }
                         )
-                        .controller {
+                        .customController {
                             FloatSliderController(it, 0F, 1F, 0.1F)
                         }
                         .build()
                 )
                 .option(
-                    Option.createBuilder(Float::class.java)
+                    Option.createBuilder<Float>()
                         .name(Component.literal("Background Opacity"))
-                        .tooltip(Component.literal("The opacity of the scoreboard background"))
+//                        .tooltip(Component.literal("The opacity of the scoreboard background"))
                         .binding(
                             0.3F,
                             { backgroundOpacity },
@@ -86,7 +85,7 @@ object ScoreboardSettings {
                                 backgroundOpacity = newValue
                             }
                         )
-                        .controller {
+                        .customController {
                             FloatSliderController(it, 0F, 1F, 0.1F)
                         }
                         .build()
@@ -110,8 +109,8 @@ object ScoreboardSettings {
     private fun lineOptions(): List<Option<Boolean>> {
         val l = mutableListOf<Option<Boolean>>()
         l.add(
-            Option.createBuilder(Boolean::class.java)
-                .tooltip(Component.literal("Select if the scoreboard title should be hidden"))
+            Option.createBuilder<Boolean>()
+//                .tooltip(Component.literal("Select if the scoreboard title should be hidden"))
                 .name(Component.literal("Hide scoreboard title"))
                 .binding(
                     false,
@@ -120,14 +119,14 @@ object ScoreboardSettings {
                         hideTitle = newValue
                     }
                 )
-                .controller(::TickBoxController)
+                .controller(TickBoxControllerBuilder::create)
                 .build()
         )
         repeat(15) {
             val i = it + 1
-            l.add(Option.createBuilder(Boolean::class.java)
+            l.add(Option.createBuilder<Boolean>()
                 .name(Component.literal("Hide line $i"))
-                .tooltip(Component.literal("Select if line $i should be hidden"))
+//                .tooltip(Component.literal("Select if line $i should be hidden"))
                 .binding(
                     false,
                     { hiddenLines.contains(i) },
@@ -138,7 +137,7 @@ object ScoreboardSettings {
                             hiddenLines.remove(i)
                     }
                 )
-                .controller(::TickBoxController)
+                .controller(TickBoxControllerBuilder::create)
                 .build()
             )
         }
