@@ -85,6 +85,7 @@ curseforge {
         relations(closureOf<com.matthewprenger.cursegradle.CurseRelation> {
             requiredDependency("fabric-api")
             requiredDependency("fabric-language-kotlin")
+            optionalDependency("modmenu")
         })
     })
     options(closureOf<com.matthewprenger.cursegradle.Options> {
