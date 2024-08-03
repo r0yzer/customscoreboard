@@ -3,17 +3,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.serialization") version "1.9.20"
-    id("fabric-loom") version "1.4-SNAPSHOT"
+    id("fabric-loom") version "1.7-SNAPSHOT"
     //id("org.quiltmc.quilt-mappings-on-loom") version "4.2.1"
-    id("io.github.juuxel.loom-quiltflower") version "1.9.0"
-    id("com.modrinth.minotaur") version "2.8.1"
+    id("com.modrinth.minotaur") version "2.8.7"
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
-val minecraftVersion = "1.20.2"
+val minecraftVersion = "1.21"
 
 group = "de.royzer"
-version = "1.0.2"
+version = "1.1.0"
 
 repositories {
     maven("https://maven.fabricmc.net/")
@@ -21,17 +20,22 @@ repositories {
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.terraformersmc.com/releases")
 }
+
+loom {
+    accessWidenerPath = file("src/main/resources/customscoreboard.accessWidener")
+}
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
+    implementation("org.vineflower:vineflower:1.10.1")
 
-    modImplementation("net.fabricmc:fabric-loader:0.14.24")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.90.7+1.20.2")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.10.13+kotlin.1.9.20")
+    modImplementation("net.fabricmc:fabric-loader:0.15.11")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.100.8+1.21")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
 
-    include(modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.0-beta.1+1.20.2")!!)
-    modApi("com.terraformersmc:modmenu:8.0.0")
+    include(modImplementation("dev.isxander:yet-another-config-lib:3.5.0+1.21-fabric")!!)
+    modApi("com.terraformersmc:modmenu:11.0.1")
 }
 
 
@@ -44,7 +48,7 @@ tasks {
         options.encoding = "UTF-8"
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
     processResources {
         inputs.property("version", project.version)

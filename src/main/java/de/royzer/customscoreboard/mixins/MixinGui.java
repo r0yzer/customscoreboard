@@ -8,8 +8,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.scores.Objective;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -17,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGui  {
 
     @Shadow
-    private int screenWidth;
+    @Final
+    private Minecraft minecraft;
 
     @Inject(
         method = "displayScoreboardSidebar",
@@ -31,33 +34,35 @@ public abstract class MixinGui  {
     }
 
     @ModifyArg(
-        method = "displayScoreboardSidebar",
+        method = "method_55440",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I"
+            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
+            ordinal = 2
         ),
         index = 1
     )
-    public String removeNumbers(String text) {
-        if (ScoreboardSettings.INSTANCE.getHideNumbers()) return "";
-        else return text;
+    public Component removeNumbers(Component component) {
+        if (ScoreboardSettings.INSTANCE.getHideNumbers()) return Component.literal("");
+        else return component;
     }
 
     @ModifyArg(
-        method = "displayScoreboardSidebar",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I"
-        ),
-        index = 2
+            method = "method_55440",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
+                    ordinal = 2
+            ),
+            index = 2
     )
     public int correctScoreboardPosition(int i) {
-        if (ScoreboardSettings.INSTANCE.getHideNumbers()) return this.screenWidth - 3 + 2;
+        if (ScoreboardSettings.INSTANCE.getHideNumbers()) return this.minecraft.getWindow().getScreenWidth() - 3 + 2;
         else return i;
     }
 
     @Redirect(
-        method = "displayScoreboardSidebar",
+        method = "method_55440",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
@@ -69,7 +74,7 @@ public abstract class MixinGui  {
     }
 
     @Redirect(
-        method = "displayScoreboardSidebar",
+        method = "method_55440",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
@@ -82,11 +87,11 @@ public abstract class MixinGui  {
 
     // hide title
     @Redirect(
-        method = "displayScoreboardSidebar",
+        method = "method_55440",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
-            ordinal = 1
+            ordinal = 0
         )
     )
     public int hideTitle(GuiGraphics instance, Font font, Component component, int i, int j, int k, boolean bl) {
@@ -97,27 +102,14 @@ public abstract class MixinGui  {
     }
 
     @Redirect(
-        method = "displayScoreboardSidebar",
+        method = "method_55440",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",
-            ordinal = 1
+            ordinal = 0
         )
     )
     public void hideTitleBackground(GuiGraphics instance, int i, int j, int k, int l, int m) {
-        if (!ScoreboardSettings.INSTANCE.getHideTitle()) {
-            instance.fill(i, j, k, l, m);
-        }
-    }
-    @Redirect(
-        method = "displayScoreboardSidebar",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",
-            ordinal = 2
-        )
-    )
-    public void hideTitleBackground2(GuiGraphics instance, int i, int j, int k, int l, int m) {
         if (!ScoreboardSettings.INSTANCE.getHideTitle()) {
             instance.fill(i, j, k, l, m);
         }
