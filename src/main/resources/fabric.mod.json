@@ -16,7 +16,7 @@
     "r0yzer"
   ],
   "depends": {
-    "minecraft": "1.20.x",
+    "minecraft": "1.21",
     "fabric-language-kotlin": "*",
     "fabricloader": ">=0.8.7",
     "fabric": "*",
@@ -32,5 +32,6 @@
   "mixins": [
     "customscoreboard.mixins.json"
   ],
+  "accessWidener": "customscoreboard.accessWidener",
   "icon": "assets/icon.png"
 }
