@@ -34,7 +34,7 @@ public abstract class MixinGui  {
     }
 
     @ModifyArg(
-        method = "method_55440",
+        method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
@@ -48,7 +48,7 @@ public abstract class MixinGui  {
     }
 
     @ModifyArg(
-            method = "method_55440",
+            method = "displayScoreboardSidebar",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
@@ -62,7 +62,7 @@ public abstract class MixinGui  {
     }
 
     @Redirect(
-        method = "method_55440",
+        method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
@@ -74,7 +74,7 @@ public abstract class MixinGui  {
     }
 
     @Redirect(
-        method = "method_55440",
+        method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/Options;getBackgroundColor(F)I",
@@ -87,7 +87,7 @@ public abstract class MixinGui  {
 
     // hide title
     @Redirect(
-        method = "method_55440",
+        method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;IIIZ)I",
@@ -102,7 +102,7 @@ public abstract class MixinGui  {
     }
 
     @Redirect(
-        method = "method_55440",
+        method = "displayScoreboardSidebar",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V",

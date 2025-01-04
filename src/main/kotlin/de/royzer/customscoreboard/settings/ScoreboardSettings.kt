@@ -12,6 +12,11 @@ import kotlinx.serialization.json.Json
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
+
+val json = Json {
+    prettyPrint = true
+}
+
 object ScoreboardSettings {
     var showScoreboard = true
     var hideNumbers = false
@@ -161,7 +166,7 @@ object ScoreboardSettings {
 
     private fun save() {
         configFile.writeText(
-            Json.encodeToString(
+            json.encodeToString(
                 ScoreboardSettingsFile(
                     showScoreboard, hideNumbers, backgroundOpacity, titleBackgroundOpacity, hideTitle, hiddenLines
                 )

@@ -9,10 +9,10 @@ plugins {
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
-val minecraftVersion = "1.21"
+val minecraftVersion = "1.21.4"
 
 group = "de.royzer"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     maven("https://maven.fabricmc.net/")
@@ -30,12 +30,12 @@ dependencies {
 
     implementation("org.vineflower:vineflower:1.10.1")
 
-    modImplementation("net.fabricmc:fabric-loader:0.15.11")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.100.8+1.21")
+    modImplementation("net.fabricmc:fabric-loader:0.16.9")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.114.0+1.21.4")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
 
-    include(modImplementation("dev.isxander:yet-another-config-lib:3.5.0+1.21-fabric")!!)
-    modApi("com.terraformersmc:modmenu:11.0.1")
+    include(modImplementation("dev.isxander:yet-another-config-lib:3.6.2+1.21.4-fabric")!!)
+    modApi("com.terraformersmc:modmenu:13.0.0-beta.1")
 }
 
 
